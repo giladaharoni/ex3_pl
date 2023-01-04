@@ -46,10 +46,7 @@ let rec substitute x t1 t2 = match t2 with
 
 let rec reduce_cbv term = match term with
 			| Variable _ -> None (* no reduction possible for variables *)
-			| Abstraction (s, t) -> 
-				(match reduce_cbv t with
-				| Some t' -> Some (Abstraction (s, t'))
-				| None -> None)
+			| Abstraction (s, t) -> None
 			| Application (Abstraction (s, t), t2) -> (match reduce_cbv t2 with
 				| Some t2' -> Some (Application (Abstraction (s, t), t2'))
 				| None -> Some (substitute s t2 t))
@@ -63,9 +60,7 @@ let rec reduce_cbv term = match term with
 
 let rec reduce_cbn term = match term with
 	| Variable _ -> None (* no reduction possible for variables *)
-	| Abstraction (s, t) -> (match reduce_cbn t with
-		| Some t' -> Some (Abstraction (s, t'))
-		| None -> None)
+	| Abstraction (s, t) -> None
 	| Application (Abstraction (s, t), t2) -> Some (substitute s t2 t)
 	| Application (t1, t2) -> (match reduce_cbn t1 with
 		| Some t1' -> Some (Application (t1', t2))
